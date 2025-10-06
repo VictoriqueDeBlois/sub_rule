@@ -195,10 +195,10 @@ class ProxyGroupGenerator:
             exclude_patterns.extend(keywords)
 
         # 构建否定前瞻正则：(?!.*(香港|HK|日本|JP|...))
-        negative_lookahead = ''.join(map(lambda x: f'(?!{x})', exclude_patterns))
+        negative_lookahead = f"(?!.*({'|'.join(exclude_patterns)}))"
 
         groups.append(
-            f"custom_proxy_group={Config.EMOJIS['other']} 其他`select`^{negative_lookahead}.*$"
+            f"custom_proxy_group={Config.EMOJIS['other']} 其他`select`^{negative_lookahead}.*"
         )
 
         # 其他地区 + 各类型
@@ -206,14 +206,14 @@ class ProxyGroupGenerator:
             type_emoji = Config.EMOJIS['type'][node_type]
             # 匹配包含类型但不包含预设地区的节点
             groups.append(
-                f"custom_proxy_group={Config.EMOJIS['other']} 其他-{type_emoji}{node_type}`select`^{negative_lookahead}.*{node_type}.*$"
+                f"custom_proxy_group={Config.EMOJIS['other']} 其他-{type_emoji}{node_type}`select`^{negative_lookahead}.*{node_type}.*"
             )
 
         # 其他地区 + 各等级
         for tier in Config.TIER_LEVELS:
             tier_emoji = Config.EMOJIS['tier'][tier]
             groups.append(
-                f"custom_proxy_group={Config.EMOJIS['other']} 其他-{tier_emoji}{tier}`select`^{negative_lookahead}.*{tier}.*$"
+                f"custom_proxy_group={Config.EMOJIS['other']} 其他-{tier_emoji}{tier}`select`^{negative_lookahead}.*{tier}.*"
             )
 
         # # 其他地区 + 类型 + 等级组合
