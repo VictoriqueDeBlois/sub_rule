@@ -152,7 +152,7 @@ class ProxyGroupGenerator:
             emoji = info['emoji']
             regex = info['regex']
             groups.append(
-                f"custom_proxy_group={emoji} {region}`select`{regex}"
+                f"custom_proxy_group={emoji} {region}`url-test`{regex}`http://www.gstatic.com/generate_204`300,5,50"
             )
 
         return groups
@@ -195,12 +195,11 @@ class ProxyGroupGenerator:
             exclude_patterns.extend(keywords)
 
         # 构建否定前瞻正则：(?!.*(香港|HK|日本|JP|...))
-        negative_lookahead = f"(?!.*({'|'.join(exclude_patterns)}))"
+        negative_lookahead = f"(?!{'|'.join(exclude_patterns)})"
 
-        # 构建排除预设地区的正则
-        exclude_patterns = []
-        for region_info in Config.REGIONS.values():
-            exclude_patterns.append(region_info['regex'])
+        groups.append(
+            f"custom_proxy_group={Config.EMOJIS['other']} 其他`select`{negative_lookahead}.*"
+        )
 
         # 其他地区 + 各类型
         for node_type in Config.NODE_TYPES:
@@ -217,14 +216,14 @@ class ProxyGroupGenerator:
                 f"custom_proxy_group={Config.EMOJIS['other']} 其他-{tier_emoji}{tier}`select`{negative_lookahead}.*{tier}.*"
             )
 
-        # 其他地区 + 类型 + 等级组合
-        for node_type in Config.NODE_TYPES:
-            for tier in Config.TIER_LEVELS:
-                type_emoji = Config.EMOJIS['type'][node_type]
-                tier_emoji = Config.EMOJIS['tier'][tier]
-                groups.append(
-                    f"custom_proxy_group={Config.EMOJIS['other']} 其他-{type_emoji}{node_type}-{tier_emoji}{tier}`select`{negative_lookahead}.*{node_type}.*{tier}.*"
-                )
+        # # 其他地区 + 类型 + 等级组合
+        # for node_type in Config.NODE_TYPES:
+        #     for tier in Config.TIER_LEVELS:
+        #         type_emoji = Config.EMOJIS['type'][node_type]
+        #         tier_emoji = Config.EMOJIS['tier'][tier]
+        #         groups.append(
+        #             f"custom_proxy_group={Config.EMOJIS['other']} 其他-{type_emoji}{node_type}-{tier_emoji}{tier}`select`{negative_lookahead}.*{node_type}.*{tier}.*"
+        #         )
 
         return groups
 
@@ -253,15 +252,15 @@ class ProxyGroupGenerator:
                     f"custom_proxy_group={region_emoji}{region}-{tier_emoji}{tier}`url-test`{regex}`http://www.gstatic.com/generate_204`300,5,50"
                 )
 
-            # 地区 + 类型 + 等级
-            for node_type in Config.NODE_TYPES:
-                for tier in Config.TIER_LEVELS:
-                    type_emoji = Config.EMOJIS['type'][node_type]
-                    tier_emoji = Config.EMOJIS['tier'][tier]
-                    regex = f"{region_regex}.*{node_type}.*{tier}"
-                    groups.append(
-                        f"custom_proxy_group={region_emoji}{region}-{type_emoji}{node_type}-{tier_emoji}{tier}`url-test`{regex}`http://www.gstatic.com/generate_204`300,5,50"
-                    )
+            # # 地区 + 类型 + 等级
+            # for node_type in Config.NODE_TYPES:
+            #     for tier in Config.TIER_LEVELS:
+            #         type_emoji = Config.EMOJIS['type'][node_type]
+            #         tier_emoji = Config.EMOJIS['tier'][tier]
+            #         regex = f"{region_regex}.*{node_type}.*{tier}"
+            #         groups.append(
+            #             f"custom_proxy_group={region_emoji}{region}-{type_emoji}{node_type}-{tier_emoji}{tier}`url-test`{regex}`http://www.gstatic.com/generate_204`300,5,50"
+            #         )
 
         return groups
 
